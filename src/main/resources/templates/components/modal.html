@@ -1,0 +1,15 @@
+<!-- modal -->
+<div th:fragment="modal(name, title, body)" class="modal fade" th:id="${name}" tabindex="-1" th:aria-labelledby="${name + '-title'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" th:id="${name + '-title'}" th:text="${title}"></h5>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <th:block th:insert="${body}"></th:block>
+            </div>
+        </div>
+    </div>
+</div>

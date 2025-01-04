@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title> Bilan de Stock </title>
+    <style>
+        @page {
+            size: A4 landscape; /* Set page size to A4 and orientation to landscape */
+            margin: 1cm; /* Set margins */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        p {
+            font-size: 14px;
+        }
+        table {
+            border: solid black;
+            border-collapse: collapse;
+
+            width: 100%;
+        }
+
+        table tr {
+            height: 40px;
+        }
+
+        table th {
+            text-transform: uppercase;
+        }
+
+        table th, table td {
+            font-size: 10px;
+            padding: 4px;
+        }
+        
+        .odd-col {
+            background-color: rgb(247, 247, 247);
+        }
+
+        .odd-row {
+            background-color: rgb(240, 240, 240);
+        }
+
+        .even-row {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1> Bilan de Stock </h1>
+    <p> Bilan des <span th:text="${balance.ndays}"></span> derniers jours à partir de <span th:text="${balance.reference}"></span> </p>
+
+    <table>
+        <thead th:with="count=0">
+            <tr style="color: white;">
+                <th></th>
+                <th th:style="'background-color: ' + ${categoryProps[category.id].color}" th:each="category : ${balance.categories}" th:text="${category.label}" th:colspan="${categoryProps[category.id].length}"></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th:block th:each="category : ${balance.categories}">
+                    <th th:style="'background-color: ' + ${subcategoryProps[subcategory.id].color}" th:each="subcategory : ${balance.subcategories[category.id]}" th:text="${subcategory.label}" th:colspan="${subcategoryProps[subcategory.id].length}"></th>
+                </th:block>
+            </tr>
+            <tr>
+                <th></th>
+                <th:block th:each="category : ${balance.categories}">
+                    <th:block th:each="subcategory : ${balance.subcategories[category.id]}">
+                        <th th:style="'background-color: ' + ${productProps[product.id].color}" th:each="product : ${balance.products[subcategory.id]}" th:text="${product.label}" th:colspan="${productProps[product.id].length}"></th>
+                    </th:block>
+                </th:block>
+            </tr>
+            <tr>
+                <th> Date </th>
+                <th:block th:each="category : ${balance.categories}">
+                    <th:block th:each="subcategory : ${balance.subcategories[category.id]}">
+                        <th:block th:each="product : ${balance.products[subcategory.id]}">
+                            <th> Entrée </th>
+                            <th> Sortie </th>
+                            <th class="odd-col"> Solde </th>
+                        </th:block>
+                    </th:block>
+                </th:block>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="record, iter : ${balance.records}" th:class="${iter.odd ? 'odd-row' : 'even-row'}">
+                <td th:text="${record.key}"></td>
+                <th:block th:each="category : ${balance.categories}">
+                    <th:block th:each="subcategory : ${balance.subcategories[category.id]}">
+                        <th:block th:each="product : ${balance.products[subcategory.id]}">
+                            <td align="right" th:text="${record.value[product.id]?.entry ?: 0}"></td>
+                            <td align="right" th:text="${record.value[product.id]?.withdraw ?: 0}"></td>
+                            <td align="right" th:text="${record.value[product.id]?.balance ?: 0}"  th:class="${iter.odd ? 'odd-row': ''} + ' odd-col'"></td>
+                        </th:block>
+                    </th:block>
+                </th:block>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

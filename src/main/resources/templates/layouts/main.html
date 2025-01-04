@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+
+    <!-- <link rel="stylesheet" type="text/css" href="/src/css/style.css" /> -->
+    <link rel="stylesheet" type="text/css" href="/lib/fa/css/all.min.css" />
+    
+    <link rel="stylesheet" type="text/css" href="/lib/mdb5/css/mdb.min.css" />
+    
+    <link rel="stylesheet" type="text/css" href="/src/css/style.css">
+
+    <script defer type="text/javascript" src="/lib/mdb5/js/mdb.umd.min.js"></script>
+    
+    <script defer type="text/javascript" src="/lib/toolkit/js/dom.toolkit.js"></script>
+    <script defer type="text/javascript" src="/lib/toolkit/js/CRUDPage.js"></script>
+    <script defer type="text/javascript" src="/lib/toolkit/js/Pagination.js"></script>
+    
+    <script defer type="text/javascript" src="/src/js/index.js"></script>
+    <!-- <script type="text/javascript" src="/src/js/script.js"></script> -->
+</head>
+<body>
+    <div id="container">
+        <aside th:insert="~{/components/sidenav :: sidenav(${active})}"></aside>
+        <main th:insert="~{${page} :: content}"></main>
+    </div>
+</body>
+</html>

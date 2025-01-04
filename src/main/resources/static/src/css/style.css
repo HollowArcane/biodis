@@ -1,0 +1,164 @@
+@font-face {
+  font-family: "Rubik";
+  src: url("../font/Rubik-VariableFont_wght.ttf") format(".ttf");
+}
+* {
+  font-family: "Rubik" sans-serif;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100dvh;
+}
+
+body {
+  background-color: #f6f6f6;
+}
+
+.fx__table th {
+  text-transform: uppercase;
+  color: rgb(150, 150, 150);
+}
+
+.table-balance tbody td:nth-of-type(3n+1) {
+  background-color: rgb(245, 245, 245);
+}
+
+.pf__navbar {
+  position: sticky;
+  top: 0;
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+  padding: 4rem 0;
+  background-image: linear-gradient(#7B1FA2, #0277BD);
+}
+.pf__navbar-brand {
+  text-align: center;
+}
+.pf__navbar-brand a {
+  color: white;
+}
+.pf__navbar-section {
+  margin-top: 3rem;
+}
+.pf__navbar-subtitle {
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 3rem;
+  font-size: 1rem;
+}
+.pf__navbar-item {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 0.9;
+  padding: 0.5rem 0 0.5rem 2rem;
+  width: 100%;
+}
+.pf__navbar-item i {
+  display: inline-grid;
+  place-items: center;
+  width: 1rem;
+  margin-right: 0.75rem;
+}
+.pf__navbar-list {
+  margin: 0;
+  padding: 0;
+}
+.pf__navbar > .pf__navbar-section > .pf__navbar-list > li:hover > .pf__navbar-item, .pf__navbar > .pf__navbar-section > .pf__navbar-list > li.active > .pf__navbar-item, .pf__navbar > .pf__navbar-section > .pf__navbar-list > li:has(:hover) > .pf__navbar-item, .pf__navbar > .pf__navbar-section > .pf__navbar-list > li:has(.active) > .pf__navbar-item {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.pf__navbar > .pf__navbar-section > .pf__navbar-list > li:hover > .pf__navbar-item::before, .pf__navbar > .pf__navbar-section > .pf__navbar-list > li.active > .pf__navbar-item::before, .pf__navbar > .pf__navbar-section > .pf__navbar-list > li:has(:hover) > .pf__navbar-item::before, .pf__navbar > .pf__navbar-section > .pf__navbar-list > li:has(.active) > .pf__navbar-item::before {
+  width: 3px;
+  color: white;
+}
+.pf__navbar li {
+  transition: color 0.2s;
+}
+.pf__navbar li > .pf__navbar-item {
+  position: relative;
+}
+.pf__navbar li > .pf__navbar-item::before, .pf__navbar li:has(> div) > .pf__navbar-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0px;
+  background-color: white;
+  border-radius: 1rem 0 0 1rem;
+  transition: 0.3s;
+}
+.pf__navbar li:has(> div) > .pf__navbar-item::after {
+  width: 14px;
+  height: 14px;
+  inset: 50% 10px auto auto;
+  clip-path: polygon(30% 0%, 50% 0%, 100% 50%, 50% 100%, 30% 100%, 80% 50%);
+  translate: 0% -50%;
+}
+.pf__navbar li.active > .pf__navbar-item, .pf__navbar li:hover > .pf__navbar-item {
+  color: white;
+}
+.pf__navbar li.active > .pf__navbar-item::after {
+  rotate: 90deg;
+}
+.pf__navbar li.active > div {
+  grid-template-rows: 1fr;
+}
+.pf__navbar li > div {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.pf__navbar li > div > .pf__navbar-list {
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.pf__navbar li.static > div {
+  transition: none;
+}
+
+section {
+  height: 40dvh;
+}
+
+.pf__card-image-warp {
+  height: 300px;
+}
+.pf__card-image-warp img {
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.pf__image-upload {
+  position: relative;
+  height: 400px;
+}
+.pf__image-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 1rem;
+}
+
+/*# sourceMappingURL=style.css.map */
