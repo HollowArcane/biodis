@@ -1,6 +1,6 @@
 <div th:fragment="content" class="container mt-5">
     <h1 class="d-flex gap-1 align-items-center mb-3">
-        <button id="btn-add" type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modal">
+        <button id="btn-add" type="button" class="btn btn-success" data-mdb-tooltip-init title="Insérer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modal">
             <i class="fa fa-add"></i>
         </button>
         Liste des Produits
@@ -13,7 +13,7 @@
                 <div th:replace="~{/components/form :: input('label', ${product.label}, 'text', 'Libellé')}"></div>
                 <div th:replace="~{/components/form :: select('idProductSubcategory', ${product.idProductSubcategory}, ${subcategories}, 'Sous-catégorie')}"></div>
             
-                <button class="btn btn-primary"> Valider </button>
+                <button class="btn btn-success"> Valider </button>
             </form>
         </div>
     </div>

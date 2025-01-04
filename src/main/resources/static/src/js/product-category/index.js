@@ -30,6 +30,8 @@ class Page extends CRUDPage
                             'data-mdb-ripple-init': true,
                             'data-mdb-modal-init': true,
                             'data-mdb-target': '#modal',
+                            'data-mdb-tooltip-init': true,
+                            'title': 'Modifier',
                             'onclick': () => {
                                 heading.textContent = 'Modification Catégorie de Produit';
                                 this.form.load({
@@ -40,7 +42,16 @@ class Page extends CRUDPage
                         },
                         [icon({}, ['fa', 'fa-pencil'])]
                     ),
-                    tag('button', {'class': 'btn btn-secondary text-danger','onclick': this.delete.bind(this, row.id)}, [icon({}, ['fa', 'fa-trash'])]),
+                    tag('button',
+                        {
+                            'class': 'btn btn-secondary text-danger',
+                            'data-mdb-ripple-init': true,
+                            'data-mdb-tooltip-init': true,
+                            'title': 'Supprimer',
+                            'onclick': this.delete.bind(this, row.id)
+                        },
+                        [icon({}, ['fa', 'fa-trash'])]
+                    ),
                 ]),
                 tag('td', {}, [text(row.label)]),
             ]));

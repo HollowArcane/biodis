@@ -1,9 +1,9 @@
 <div th:fragment="content" class="container mt-5">
     <h1 class="d-flex gap-1 align-items-center mb-3">
-        <button type="button" class="btn btn-secondary text-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modal">
+        <button type="button" class="btn btn-secondary text-success" data-mdb-tooltip-init title="Filtrer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modal">
             <i class="fa fa-filter"></i>
         </button>
-        <button id="btn-pdf" type="button" class="btn btn-secondary text-danger" data-mdb-ripple-init data-mdb-modal-init>
+        <button id="btn-pdf" type="button" class="btn btn-secondary text-danger" data-mdb-tooltip-init title="Exporter PDF" data-mdb-ripple-init>
             <i class="fa fa-file-pdf"></i>
         </button>
         Bilan de Stock
@@ -18,7 +18,7 @@
                 <div th:replace="~{/components/form :: input('date', ${today}, 'date', 'Date')}"></div>
                 <div th:replace="~{/components/form :: select('idCategory', '', ${categories}, 'Catégorie')}"></div>
             
-                <button class="btn btn-primary"> Valider </button>
+                <button class="btn btn-success"> Valider </button>
             </form>
         </div>
     </div>

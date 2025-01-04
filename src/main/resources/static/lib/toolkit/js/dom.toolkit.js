@@ -4,7 +4,7 @@ function tag(tag, attributes, children)
     for(let key in attributes)
     {
         if(key.startsWith('on'))
-        { element[key] = attributes[key]; }
+        { element.addEventListener(key.substring(2), attributes[key]); }
 
         else if(attributes[key] === true)
         { element.setAttribute(key, true); }
