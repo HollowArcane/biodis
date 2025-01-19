@@ -35,55 +35,51 @@ public class ProductStockDailyBalancePDFService
         {
             model.addAttribute("balance", balance);
         
-        String[][] colors = {
-            { "#3F51B5", "#FF8F00", "#1976D2", "#558B2F", "#0097A7", "#5D4037", "#00897B" },
-            { "#F6F6F6", "#FFFFFF" },
-            { "#FFEBEE", "#EDE7F6", "#E3F2FD", "#E0F2F1", "#FFF3E0", "#EFEBE9", "##CEFF1", "#FCE4EC" },
-        };
+            String[][] colors = {
+                { "#3F51B5", "#FF8F00", "#1976D2", "#558B2F", "#0097A7", "#5D4037", "#00897B" },
+                { "#F6F6F6", "#FFFFFF" },
+                { "#FFEBEE", "#EDE7F6", "#E3F2FD", "#E0F2F1", "#FFF3E0", "#EFEBE9", "##CEFF1", "#FCE4EC" },
+            };
 
-        Map<Integer, Object> categoryProps = new HashMap<>();
-        Map<Integer, Object> subcategoryProps = new HashMap<>();
-        Map<Integer, Object> productProps = new HashMap<>();
-        int cursor1 = 0, cursor2 = 0, cursor3 = 0;
+            Map<Integer, Object> categoryProps = new HashMap<>();
+            Map<Integer, Object> subcategoryProps = new HashMap<>();
+            Map<Integer, Object> productProps = new HashMap<>();
+            int cursor1 = 0, cursor2 = 0, cursor3 = 0;
 
-        
-        for(ProductCategory category: balance.getCategories())
-        {
-            cursor1 = (cursor1 + 1) % colors[0].length;
-            int lengthStack = 0;
-
-            for(ProductSubcategory subcategory: balance.getSubcategories().get(category.getId()))
+            
+            for(ProductCategory category: balance.getCategories())
             {
-                cursor2 = (cursor2 + 1) % colors[1].length;
-                int c2 = cursor2;
-                subcategoryProps.put(subcategory.getId(), new Object() {
-                    public String color = colors[1][c2];
-                    public int length = balance.getProducts().get(subcategory.getId()).size() * 3;
-                });
-                lengthStack += balance.getProducts().get(subcategory.getId()).size() * 3;
-                
-                for(Product product: balance.getProducts().get(subcategory.getId()))
+                cursor1 = (cursor1 + 1) % colors[0].length;
+                int lengthStack = 0;
+
+                for(ProductSubcategory subcategory: balance.getSubcategories().get(category.getId()))
                 {
-                    cursor3 = (cursor3 + 1) % colors[2].length;
-                    int c3 = cursor3;
-                    productProps.put(product.getId(), new Object() {
-                        public String color = colors[2][c3];
-                        public int length = 3;
-                    });
+                    cursor2 = (cursor2 + 1) % colors[1].length;
+                    subcategoryProps.put(subcategory.getId(), Map.of(
+                        "color", colors[1][cursor2],
+                        "length", balance.getProducts().get(subcategory.getId()).size() * 3
+                    ));
+                    lengthStack += balance.getProducts().get(subcategory.getId()).size() * 3;
+                    
+                    for(Product product: balance.getProducts().get(subcategory.getId()))
+                    {
+                        cursor3 = (cursor3 + 1) % colors[2].length;
+                        productProps.put(product.getId(), Map.of(
+                            "color", colors[2][cursor3],
+                            "length", 3
+                        ));
+                    }
                 }
+
+                categoryProps.put(category.getId(), Map.of(
+                    "color", colors[0][cursor1],
+                    "length", lengthStack
+                ));
             }
 
-            int c1 = cursor1;
-            int l = lengthStack;
-            categoryProps.put(category.getId(), new Object() {
-                public String color = colors[0][c1];
-                public int length = l;
-            });
-        }
-
-        model.addAttribute("categoryProps", categoryProps);
-        model.addAttribute("subcategoryProps", subcategoryProps);
-        model.addAttribute("productProps", productProps);
+            model.addAttribute("categoryProps", categoryProps);
+            model.addAttribute("subcategoryProps", subcategoryProps);
+            model.addAttribute("productProps", productProps);
 
             Context context = new Context();
             model.asMap().forEach(context::setVariable);

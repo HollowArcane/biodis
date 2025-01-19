@@ -27,8 +27,13 @@ CREATE OR REPLACE VIEW v_mvt_product_stock_daily_balance AS
         ps.label AS product_subcategory,
         ps.id_product_category,
         pc.label AS product_category,
-        -SUM(CASE WHEN mps.quantity > 0 THEN 0 ELSE mps.quantity END) AS quantity_withdraw,
-        SUM(CASE WHEN mps.quantity < 0 THEN 0 ELSE mps.quantity END) AS quantity_entry,
+        SUM(CASE WHEN mps.quantity < 0 THEN -mps.quantity ELSE 0 END) AS quantity_withdraw,
+        SUM(CASE WHEN mps.quantity > 0 THEN mps.quantity ELSE 0 END) AS quantity_entry,
+        (
+            SELECT SUM(_mps.quantity) 
+            FROM mvt_product_stock _mps 
+            WHERE _mps.id_product = mps.id_product AND _mps.date <= mps.date
+        ) AS quantity_balance,
         mps.date
     FROM
         mvt_product_stock mps

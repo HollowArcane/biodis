@@ -38,6 +38,9 @@ public class VMvtProductStockDailyBalance
     @Column(name = "quantity_entry")
     private double quantityEntry;
 
+    @Column(name = "quantity_balance")
+    private double quantityBalance;
+
     @Id
     @Column
     private LocalDate date;
@@ -73,6 +76,10 @@ public class VMvtProductStockDailyBalance
 
     public double getQuantityEntry() {
         return quantityEntry;
+    }
+
+    public double getQuantityBalance() {
+        return quantityBalance;
     }
 
     public String getProductCategory()

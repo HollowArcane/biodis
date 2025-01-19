@@ -11,7 +11,17 @@
             <form th:fragment="content" id="form" th:action="@{/stock}" th:method="${formMethod}" th:object="${productStock}">
                 <h1 th:text="${formTitle}"></h1>
     
+                <div class="row">
+                    <div class="col-6">
+                        <div th:replace="~{/components/form :: select('category', '', ${categories}, 'Catégorie')}"></div>
+                    </div>
+                    <div class="col-6">
+                        <div th:replace="~{/components/form :: select('subcategory', '', ${subcategories}, 'Sous-catégorie')}"></div>
+                    </div>
+                </div>
                 <div th:replace="~{/components/form :: select('idProduct', ${productStock.idProduct}, ${products}, 'Produit')}"></div>
+                <div class="mb-5"></div>
+
                 <div th:replace="~{/components/form :: select('action', ${productStock.action}, ${actions}, 'Action')}"></div>
                 
                 <div th:replace="~{/components/form :: input('quantity', ${productStock.quantity}, 'number', 'Quantité')}"></div>

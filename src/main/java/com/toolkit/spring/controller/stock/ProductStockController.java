@@ -1,5 +1,9 @@
 package com.toolkit.spring.controller.stock;
 
+import java.util.Map;
+import java.util.Locale.Category;
+import java.util.function.Function;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.toolkit.spring.controller.BaseController;
 import com.toolkit.spring.model.product.Product;
+import com.toolkit.spring.model.product.ProductCategory;
+import com.toolkit.spring.model.product.ProductSubcategory;
 import com.toolkit.spring.model.stock.MvtProductStock;
 import com.toolkit.spring.model.stock.Action;
+import com.toolkit.spring.repository.product.ProductCategoryRepository;
 import com.toolkit.spring.repository.product.ProductRepository;
+import com.toolkit.spring.repository.product.ProductSubcategoryRepository;
 import com.toolkit.spring.repository.stock.MvtProductStockRepository;
 import com.toolkit.spring.repository.stock.VLabelMvtProductStockRepository;
 import com.toolkit.spring.util.APIResponse;
@@ -41,6 +49,12 @@ public class ProductStockController extends BaseController
     @Autowired
     ProductRepository products;
 
+    @Autowired
+    ProductCategoryRepository categories;
+
+    @Autowired
+    ProductSubcategoryRepository subcategories;
+
     private static final Pageable pagination = Pageable.ofSize(10);
 
     @GetMapping("/page")
@@ -56,7 +70,12 @@ public class ProductStockController extends BaseController
     @GetMapping
     public ResponseEntity<APIResponse> index(@RequestParam(name = "page") Integer page)
     {
-        return APIResponse.success(200, repository.findAll(pagination.withPage(page - 1)));
+        return APIResponse.success(200, Map.of(
+            "page", repository.findAll(pagination.withPage(page - 1)),
+            "categories", Data.asMap(categories.findAll(), ProductCategory::getId, Function.identity()),
+            "subcategories", Data.asMap(subcategories.findAll(), ProductSubcategory::getId, Function.identity()),
+            "products", Data.asMap(products.findAll(), Product::getId, Function.identity())
+        ));
     }
     
     public void loadOptions(Model model)
@@ -65,6 +84,16 @@ public class ProductStockController extends BaseController
             products.findAll(), 
             Product::getId,
             Product::getLabel
+        ));
+        model.addAttribute("categories", Data.asMap(
+            categories.findAll(), 
+            ProductCategory::getId,
+            ProductCategory::getLabel
+        ));
+        model.addAttribute("subcategories", Data.asMap(
+            subcategories.findAll(), 
+            ProductSubcategory::getId,
+            ProductSubcategory::getLabel
         ));
         model.addAttribute("actions", Data.asMap(
             Action.all(), 

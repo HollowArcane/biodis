@@ -63,15 +63,15 @@ public class ProductSubcategoryController extends BaseController
     }
 
     @GetMapping
-    public ResponseEntity<APIResponse> index(@RequestParam(name = "page") Integer page)
+    public ResponseEntity<APIResponse> index(@RequestParam(name = "page", defaultValue = "0") Integer page)
     {
-        return APIResponse.success(200, new Object() {
-            public Page<ProductSubcategory> getPage()
-            { return subcategories.findAll(pagination.withPage(page - 1)); }
-            
-            public Map<Integer, ProductCategory> getCategories()
-            { return Data.asMap(categories.findAll(), ProductCategory::getId, Function.identity()); }
-        });
+        if(page == 0)
+        { return APIResponse.success(200, subcategories.findAll()); }
+
+        return APIResponse.success(200, Map.of(
+            "page", subcategories.findAll(pagination.withPage(page - 1)),
+            "categories", Data.asMap(categories.findAll(), ProductCategory::getId, Function.identity())
+        ));
     }    
 
     @PostMapping

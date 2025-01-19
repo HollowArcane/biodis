@@ -1,6 +1,7 @@
 package com.toolkit.spring.controller.product;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,12 +46,14 @@ public class ProductCategoryController extends BaseController
     }
 
     @GetMapping
-    public ResponseEntity<APIResponse> index(@RequestParam(name = "page") Integer page)
+    public ResponseEntity<APIResponse> index(@RequestParam(name = "page", defaultValue = "0") Integer page)
     {
-        return APIResponse.success(200, new Object() {
-            public Page<ProductCategory> getPage()
-            { return categories.findAll(pagination.withPage(page - 1)); }
-        });
+        if(page == 0)
+        { return APIResponse.success(200, categories.findAll()); }
+
+        return APIResponse.success(200, Map.of(
+            "page", categories.findAll(pagination.withPage(page - 1))
+        ));
     }
 
     @PostMapping

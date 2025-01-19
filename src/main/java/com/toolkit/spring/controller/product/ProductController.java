@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +39,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/product")
 public class ProductController extends BaseController
 {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+    
     @Autowired
     ProductSubcategoryRepository subcategories;
 
@@ -68,18 +72,16 @@ public class ProductController extends BaseController
     }
 
     @GetMapping
-    public ResponseEntity<APIResponse> index(@RequestParam(name = "page") Integer page)
+    public ResponseEntity<APIResponse> index(@RequestParam(name = "page", defaultValue = "0") Integer page)
     {
-        return APIResponse.success(200, new Object() {
-            public Page<Product> getPage()
-            { return products.findAll(pagination.withPage(page - 1)); }
+        if(page == 0)
+        { return APIResponse.success(200, products.findAll()); }
 
-            public Map<Integer, ProductSubcategory> getSubcategories()
-            { return Data.asMap(subcategories.findAll(), ProductSubcategory::getId, Function.identity()); }
-
-            public Map<Integer, ProductCategory> getCategories()
-            { return Data.asMap(categories.findAll(), ProductCategory::getId, Function.identity()); }
-        });
+        return APIResponse.success(200, Map.of(
+            "page", products.findAll(pagination.withPage(page - 1)),
+            "subcategories", Data.asMap(subcategories.findAll(), ProductSubcategory::getId, Function.identity()),
+            "categories", Data.asMap(categories.findAll(), ProductCategory::getId, Function.identity())
+        ));
     }    
 
     @PostMapping

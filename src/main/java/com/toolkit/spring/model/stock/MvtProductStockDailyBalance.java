@@ -23,11 +23,13 @@ public class MvtProductStockDailyBalance
     {
         private double entry;
         private double withdraw;
+        private double balance;
 
-        public Record(double entry, double withdraw)
+        public Record(double entry, double withdraw, double balance)
         {
             this.entry = entry;
             this.withdraw = withdraw;
+            this.balance = balance;
         }
 
         public double getEntry()
@@ -37,7 +39,7 @@ public class MvtProductStockDailyBalance
         { return withdraw; }
 
         public double getBalance()
-        { return entry - withdraw; }
+        { return balance; }
     }
 
     private List<ProductCategory> categories;
@@ -94,13 +96,13 @@ public class MvtProductStockDailyBalance
         for(int i = 0; i < ndays; i++)
         {
             LocalDate date = reference.plusDays(-i);
-            List<VMvtProductStockDailyBalance> records = recordRepo.findAllByDate(date);
-            
+            List<VMvtProductStockDailyBalance> records = recordRepo.findByDate(date);
+
             // map product to record
             HashMap<Integer, Record> map = new HashMap<>();
 
             for(VMvtProductStockDailyBalance record: records)
-            { map.put(record.getIdProduct(), new Record(record.getQuantityEntry(), record.getQuantityWithdraw())); }
+            { map.put(record.getIdProduct(), new Record(record.getQuantityEntry(), record.getQuantityWithdraw(), record.getQuantityBalance())); }
 
             this.records.put(date, map);
         }
