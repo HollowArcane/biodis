@@ -120,6 +120,7 @@ public class ProductStockController extends BaseController
     public ModelAndView chart(Model model)
     {
         model.addAttribute("categories", categories.options());
+        model.addAttribute("active", "/stock/chart/page");
         model.addAttribute("today", LocalDate.now());
         return render("stock/chart").title("Graphique d'Évolution du Stock")
             .with(model);
