@@ -24,39 +24,16 @@ class Page extends CRUDPage
         {
             tbody.append(tag('tr', {}, [
                 tag('td', {'class': 'd-flex gap-1'}, [
-                    tag('button',
-                        {
-                            'class': 'btn btn-secondary text-info',
-                            'data-mdb-ripple-init': true,
-                            'data-mdb-modal-init': true,
-                            'data-mdb-target': '#modal',
-                            'data-mdb-tooltip-init': true,
-                            'title': 'Modifier',
-                            'onclick': () => {
-                                heading.textContent = 'Modification Sous-catégorie de Produit';
-                                this.form.load({
-                                    'label': row.label,
-                                    'idProductCategory': row.idProductCategory,
-                                });
-                                this.form.onsubmit(this.update.bind(this, row.id));
-                            }
-                        },
-                        [icon({}, ['fa', 'fa-pencil'])]
-                    ),
-                    tag('button',
-                        {
-                            'class': 'btn btn-secondary text-danger',
-                            'data-mdb-ripple-init': true,
-                            'data-mdb-tooltip-init': true,
-                            'title': 'Supprimer',
-                            'onclick': this.delete.bind(this, row.id)
-                        },
-                        [icon({}, ['fa', 'fa-trash'])]
-                    ),
+                    BtnEdit(() => {
+                        heading.textContent = 'Modification Sous-catégorie de Produit';
+                        const {label, idProductCategory} = row;
+                        this.form.load({label, idProductCategory});
+                        this.form.onsubmit(this.update.bind(this, row.id));
+                    }),
+                    BtnDelete(this.delete.bind(this, row.id))
                 ]),
                 tag('td', {}, [text(row.label)]),
-                // tag('td', {}, [text(row.idProductCategory)]),
-                tag('td', {}, [text(data.categories[row.idProductCategory].label)]),
+                tag('td', {}, [text(row.productCategory)]),
             ]));
         }
 

@@ -24,34 +24,13 @@ class Page extends CRUDPage
         {
             tbody.append(tag('tr', {}, [
                 tag('td', {'class': 'd-flex gap-1'}, [
-                    tag('button',
-                        {
-                            'class': 'btn btn-secondary text-info',
-                            'data-mdb-ripple-init': true,
-                            'data-mdb-modal-init': true,
-                            'data-mdb-target': '#modal',
-                            'data-mdb-tooltip-init': true,
-                            'title': 'Modifier',
-                            'onclick': () => {
-                                heading.textContent = 'Modification Catégorie de Produit';
-                                this.form.load({
-                                    'label': row.label,
-                                });
-                                this.form.onsubmit(this.update.bind(this, row.id));
-                            }
-                        },
-                        [icon({}, ['fa', 'fa-pencil'])]
-                    ),
-                    tag('button',
-                        {
-                            'class': 'btn btn-secondary text-danger',
-                            'data-mdb-ripple-init': true,
-                            'data-mdb-tooltip-init': true,
-                            'title': 'Supprimer',
-                            'onclick': this.delete.bind(this, row.id)
-                        },
-                        [icon({}, ['fa', 'fa-trash'])]
-                    ),
+                    BtnEdit(() => {
+                        heading.textContent = 'Modification Catégorie de Produit';
+                        const {label} = row;
+                        this.form.load({label});
+                        this.form.onsubmit(this.update.bind(this, row.id));
+                    }),
+                    BtnDelete(this.delete.bind(this, row.id)),
                 ]),
                 tag('td', {}, [text(row.label)]),
             ]));

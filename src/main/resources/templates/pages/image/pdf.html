@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"></title>
+    <style>
+        @page {
+            size: A4 landscape; /* Set page size to A4 and orientation to landscape */
+            margin: 1cm; /* Set margins */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1 th:text="${title}"></h1>
+    <img style="width: 100%; height: auto;" th:src="${image}"></img>
+</body>
+</html>

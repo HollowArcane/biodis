@@ -1,0 +1,30 @@
++ fix stock-balance-loading
+- change repositories to services inside controllers
+- load v_label on read
+
+
+STATS:
+  - Model:
+    - MvtProductStockRepository:
+      - readSumByDate(dateMin, dateMax, idSubcategory)
+    
+    - MvtProductStockService:
+      - readDailyChartModel(dateMin, dateMax, idSubcategory)
+
+  - View:
+    - /stock/chart:
+      - Filter(date-min, date-max, id-subcategory, id-category?)
+      - Chart(x: localdate, y: quantity, name: product-name)
+      // maybe add some unit for the product model so that it can be used as a filter ?
+
+  - Controller:
+    - MctProductStockController:
+      - chart(dateMin, dateMax, idSubcategory)
+
+
+- only choose date with existing data
+- group chart by subcategory (maybe make multiple choice)
+- make chart by week and by month per year
+- client
+- facture
+- make all view access json if possible, or use dto instead

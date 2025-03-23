@@ -1,13 +1,8 @@
 package com.toolkit.spring.controller.product;
 
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -23,14 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.toolkit.spring.controller.BaseController;
-import com.toolkit.spring.model.product.Product;
-import com.toolkit.spring.model.product.ProductCategory;
-import com.toolkit.spring.model.product.ProductSubcategory;
-import com.toolkit.spring.repository.product.ProductCategoryRepository;
-import com.toolkit.spring.repository.product.ProductRepository;
-import com.toolkit.spring.repository.product.ProductSubcategoryRepository;
+import com.toolkit.spring.model.table.product.Product;
+import com.toolkit.spring.service.product.ProductCategoryService;
+import com.toolkit.spring.service.product.ProductService;
+import com.toolkit.spring.service.product.ProductSubcategoryService;
 import com.toolkit.spring.util.APIResponse;
-import com.toolkit.spring.util.Data;
 import com.toolkit.spring.util.response.ValidationErrorResponse;
 
 import jakarta.validation.Valid;
@@ -39,18 +31,16 @@ import jakarta.validation.Valid;
 @RequestMapping("/product")
 public class ProductController extends BaseController
 {
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-    
-    @Autowired
-    ProductSubcategoryRepository subcategories;
-
-    @Autowired
-    ProductCategoryRepository categories;
-
-    @Autowired
-    ProductRepository products;
-
     private static final Pageable pagination = Pageable.ofSize(10);
+
+    @Autowired
+    ProductService products;
+
+    @Autowired
+    ProductSubcategoryService subcategories;
+
+    @Autowired
+    ProductCategoryService categories;
 
     @GetMapping("/page")
     public ModelAndView list(Model model)
@@ -63,13 +53,7 @@ public class ProductController extends BaseController
     }
 
     public void loadOptions(Model model)
-    {
-        model.addAttribute("subcategories", Data.asMap(
-            subcategories.findAll(), 
-            ProductSubcategory::getId,
-            ProductSubcategory::getLabel
-        ));
-    }
+    { model.addAttribute("subcategories", subcategories.options()); }
 
     @GetMapping
     public ResponseEntity<APIResponse> index(@RequestParam(name = "page", defaultValue = "0") Integer page)
@@ -79,8 +63,8 @@ public class ProductController extends BaseController
 
         return APIResponse.success(200, Map.of(
             "page", products.findAll(pagination.withPage(page - 1)),
-            "subcategories", Data.asMap(subcategories.findAll(), ProductSubcategory::getId, Function.identity()),
-            "categories", Data.asMap(categories.findAll(), ProductCategory::getId, Function.identity())
+            "subcategories", subcategories.indexed(),
+            "categories", categories.indexed()
         ));
     }    
 
@@ -88,9 +72,7 @@ public class ProductController extends BaseController
     public ResponseEntity<APIResponse> store(@Valid Product product, BindingResult errors)
     {
         if(errors.hasErrors())
-        {
-            return APIResponse.error(400, new ValidationErrorResponse(errors));
-        }
+        { return APIResponse.error(400, new ValidationErrorResponse(errors)); }
 
         products.save(product);
         return APIResponse.success(201, "Produit inséré avec succès");

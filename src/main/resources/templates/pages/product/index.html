@@ -12,6 +12,7 @@
                 <h1 th:text="${formTitle}"></h1>
                 <div th:replace="~{/components/form :: input('label', ${product.label}, 'text', 'Libellé')}"></div>
                 <div th:replace="~{/components/form :: select('idProductSubcategory', ${product.idProductSubcategory}, ${subcategories}, 'Sous-catégorie')}"></div>
+                <div th:replace="~{/components/form :: input('thresholdWarning', ${product.thresholdWarning}, 'number', 'Seuil de Quantité Minimum')}"></div>
             
                 <button class="btn btn-success"> Valider </button>
             </form>
@@ -25,10 +26,13 @@
                 <th> Libellé </th>
                 <th> Sous-catégorie </th>
                 <th> Catégorie </th>
+                <th> Seuil de Quantité Minimum </th>
+                <th> Quantité </th>
             </tr>
         </thead>
 
         <tbody>
+            <!-- rendered using js -->
         </tbody>
     </table>
 

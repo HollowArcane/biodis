@@ -38,8 +38,6 @@ class Pagination
         const length = max - min + 1;
         const pages = [].fill(null, 0, length);
 
-        console.log(pages);
-
         for(let i = 0; i < this.side && i < this.npage; i++)
         {
             pages[i] = this.createPage(i + 1);

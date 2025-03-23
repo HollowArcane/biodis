@@ -25,40 +25,24 @@ class Page extends CRUDPage
         {
             tbody.append(tag('tr', {}, [
                 tag('td', {'class': 'd-flex gap-1'}, [
-                    tag('button',
-                        {
-                            'class': 'btn btn-secondary text-info',
-                            'data-mdb-ripple-init': true,
-                            'data-mdb-modal-init': true,
-                            'data-mdb-target': '#modal',
-                            'data-mdb-tooltip-init': true,
-                            'title': 'Modifier',
-                            'onclick': () => {
-                                heading.textContent = 'Modification Produit';
-                                this.form.load({
-                                    'label': row.label,
-                                    'idProductSubcategory': row.idProductSubcategory,
-                                });
-                                this.form.onsubmit(this.update.bind(this, row.id));
-                            }
-                        },
-                        [icon({}, ['fa', 'fa-pencil'])]
-                    ),
-                    tag('button',
-                        {
-                            'class': 'btn btn-secondary text-danger',
-                            'data-mdb-ripple-init': true,
-                            'data-mdb-modal-init': true,
-                            'data-mdb-tooltip-init': true,
-                            'title': 'Supprimer',
-                            'onclick': this.delete.bind(this, row.id)
-                        },
-                        [icon({}, ['fa', 'fa-trash'])]
-                    ),
+                    BtnEdit(() => {
+                        heading.textContent = 'Modification Produit';
+                        const {label, idProductSubcategory} = row;
+                        this.form.load({label, idProductSubcategory});
+                        this.form.onsubmit(this.update.bind(this, row.id));
+                    }),
+                    BtnDelete(this.delete.bind(this, row.id))
                 ]),
                 tag('td', {}, [text(row.label)]),
-                tag('td', {}, [text(data.subcategories[row.idProductSubcategory].label)]),
-                tag('td', {}, [text(data.categories[data.subcategories[row.idProductSubcategory].idProductCategory].label)])
+                tag('td', {}, [text(row.productSubcategory)]),
+                tag('td', {}, [text(row.productCategory)]),
+                tag('td', {align: 'right'}, [text(row.thresholdWarning)]),
+                tag('td', {}, [ProgressBar(
+                    row.signedBalance,
+                    0,
+                    Math.max(1.2 * row.signedBalance, 3 * row.thresholdWarning),
+                    row.signedBalance <= row.thresholdWarning
+                )])
             ]));
         }
         

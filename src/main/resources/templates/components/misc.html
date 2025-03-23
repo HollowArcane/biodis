@@ -1,0 +1,12 @@
+<div th:fragment="progress-bar(progress, min=0, max=100, danger=false)" class="progress" style="height: 20px">
+    <div
+        class="progress-bar progress-bar-striped progress-bar-animated"
+        th:class="${danger ? 'bg-danger': 'bg-primary'}"
+        role="progressbar"
+        th:aria-valuenow="${progress}"
+        th:aria-valuemin="${min}"
+        th:aria-valuemax="${max}"
+        th:style="'width: ' + ${progress}"
+        th:text="${progress}"
+    ></div>
+</div>

@@ -283,10 +283,7 @@ window.addEventListener('load', () => {
     const maps = document.querySelectorAll('map');
     for(const map of maps)
     { MapBuilder.addIcons(map); }
-
-    console.log(MapBuilder.LEAFLET_ICONS);
     
-
     for(const map of maps)
     {
         const builder = new MapBuilder(map);

@@ -1,10 +1,8 @@
 package com.toolkit.spring.controller.product;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -20,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.toolkit.spring.controller.BaseController;
-import com.toolkit.spring.model.product.ProductCategory;
-import com.toolkit.spring.repository.product.ProductCategoryRepository;
+import com.toolkit.spring.model.table.product.ProductCategory;
+import com.toolkit.spring.service.product.ProductCategoryService;
 import com.toolkit.spring.util.APIResponse;
 import com.toolkit.spring.util.response.ValidationErrorResponse;
 
@@ -32,7 +30,7 @@ import jakarta.validation.Valid;
 public class ProductCategoryController extends BaseController
 {
     @Autowired
-    ProductCategoryRepository categories;
+    ProductCategoryService categories;
 
     private static final Pageable pagination = Pageable.ofSize(10);
 
