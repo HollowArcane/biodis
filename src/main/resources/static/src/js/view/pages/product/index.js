@@ -24,15 +24,15 @@ class Page extends CRUDPage
         for(const row of data.page.content)
         {
             tbody.append(tag('tr', {}, [
-                tag('td', {'class': 'd-flex gap-1'}, [
+                tag('td', {}, [tag('div', {'class': 'd-flex gap-1'}, [
                     BtnEdit(() => {
                         heading.textContent = 'Modification Produit';
-                        const {label, idProductSubcategory} = row;
-                        this.form.load({label, idProductSubcategory});
+                        const {label, idProductSubcategory, thresholdWarning} = row;
+                        this.form.load({label, idProductSubcategory, thresholdWarning});
                         this.form.onsubmit(this.update.bind(this, row.id));
                     }),
-                    BtnDelete(this.delete.bind(this, row.id))
-                ]),
+                    BtnDelete(this.delete.bind(this, row.id))    
+                ])]),
                 tag('td', {}, [text(row.label)]),
                 tag('td', {}, [text(row.productSubcategory)]),
                 tag('td', {}, [text(row.productCategory)]),

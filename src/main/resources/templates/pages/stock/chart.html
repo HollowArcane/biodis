@@ -50,9 +50,29 @@
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
+                        <div class="mb-4">
+                            <label for="idCategory">Sous-Catégorie</label>
+                            <select class="form-select" id="idSubcategory" name="idSubcategory">
+                                <option value="">Tous</option>
+                                <option 
+                                    th:each="subcategory : ${subcategories.entrySet()}" 
+                                    th:value="${subcategory.key}" 
+                                    th:text="${subcategory.value}"></option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="group">Groupé Par</label>
+                            <select class="form-select" id="group" name="group">
+                                <option value="subcategory">Sous-Catégorie</option>
+                                <option value="category">Catégorie</option>
+                                <option value="product">Produit</option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <div class="mb-4">
                             <label for="chartType">Type de Graphique</label>
                             <select class="form-select" id="chartType" name="chartType">
@@ -61,7 +81,7 @@
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="mb-3">
@@ -84,5 +104,5 @@
     <div style="height: 500px; position: relative; width: 100%;">
         <canvas id="chart"></canvas>
     </div>
-    <script defer type="text/javascript" src="/src/js/stock/chart.js"></script>
+    <script defer type="text/javascript" th:src="${js_pages + '/stock/chart.js'}"></script>
 </div>

@@ -22,8 +22,8 @@
                 <div th:replace="~{/components/form :: select('idProduct', ${productStock.idProduct}, ${products}, 'Produit')}"></div>
                 <div class="mb-5"></div>
 
-                <div th:replace="~{/components/form :: input('quantityIn', '0', 'number', 'Entrée')}"></div>
-                <div th:replace="~{/components/form :: input('quantityOut', '0', 'number', 'Sortie')}"></div>
+                <div th:replace="~{/components/form2 :: input('quantityIn', '0', 'number', 'Entrée', '0.001')}"></div>
+                <div th:replace="~{/components/form2 :: input('quantityOut', '0', 'number', 'Sortie', '0.001')}"></div>
                 <div th:replace="~{/components/form :: input('date', ${productStock.date}, 'date', 'Date')}"></div>
             
                 <button class="btn btn-success"> Valider </button>
@@ -50,5 +50,5 @@
     </table>
 
     <div th:replace="~{/components/pagination :: pagination}"></div>
-    <script defer type="text/javascript" src="/src/js/stock/index.js"></script>
+    <script defer type="text/javascript" th:src="${js_pages + '/stock/index.js'}"></script>
 </div>

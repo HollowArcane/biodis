@@ -3,12 +3,12 @@ const heading = document.querySelector('#modal-title');
 
 class Page extends CRUDPage
 {
-    constructor(btnAdd, table, form)
+    constructor(btnAdd, table, form, categories, subcategories, product)
     {
         super('/stock', btnAdd, table, form);
-        this.categories = document.getElementById('category');
-        this.subcategories = document.getElementById('subcategory');
-        this.products = document.getElementById('idProduct');
+        this.categories = categories;
+        this.subcategories = subcategories;
+        this.products = products;
     }
 
     init()
@@ -30,7 +30,7 @@ class Page extends CRUDPage
         this.categories.replaceChildren(...Options(this.data.categories, 'id', 'label'));
         this.subcategories.replaceChildren(...Options(this.data.subcategories, 'id', 'label'));
         this.products.replaceChildren(...Options(this.data.products, 'id', 'label'));
-
+        
         this.categories.onchange = e => {
             const value = parseInt(this.categories.value || 0);
             // only filter if value != 0
@@ -40,6 +40,7 @@ class Page extends CRUDPage
             this.subcategories.value = filter[0].id;
             this.subcategories.onchange(e);
         };
+
         this.subcategories.onchange = e => {
             const superValue = parseInt(this.categories.value || 0);
             const value = parseInt(this.subcategories.value || 0);
@@ -65,7 +66,7 @@ class Page extends CRUDPage
         for(const row of data.page.content)
         {
             tbody.append(tag('tr', {}, [
-                tag('td', {'class': 'd-flex gap-1'}, [
+                tag('td', {}, [tag('div', {'class': 'd-flex gap-1'}, [
                     BtnEdit(() => {
                         heading.textContent = 'Modification Mouvement de Stock';
                         const {idProduct, quantityIn, quantityOut, date} = row;
@@ -73,7 +74,7 @@ class Page extends CRUDPage
                         this.form.onsubmit(this.update.bind(this, row.id));
                     }),
                     BtnDelete(this.delete.bind(this, row.id))
-                ]),
+                ])]),
                 tag('td', {}, [text(row.productCategory)]),
                 tag('td', {}, [text(row.productSubcategory)]),
                 tag('td', {}, [text(row.product)]),
@@ -100,6 +101,9 @@ window.addEventListener('load', e => {
     new Page(
         document.getElementById('btn-add'),
         document.getElementById('table'),
-        document.getElementById('form')
+        document.getElementById('form'),
+        document.getElementById('category'),
+        document.getElementById('subcategory'),
+        document.getElementById('idProduct')
     ).init()
 })

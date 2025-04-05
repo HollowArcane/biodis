@@ -1,0 +1,15 @@
+
+<!-- input component -->
+<!-- this is the only solution I found to make an input with step without changing all existing views while also avoiding component duplication, fuck thymeleaf -->
+<div th:fragment="input(name, value, type, label, step)">
+    <div class="mb-4">
+        <label th:for="${name}" th:text="${label}"></label>
+        <input th:type="${type}" 
+               class="form-control" 
+               th:value="${value}" 
+               th:id="${name}" 
+               th:name="${name}" 
+               th:attr="step=${step != null ? step : _}" />
+        <div class="invalid-feedback"></div>
+    </div>
+</div>

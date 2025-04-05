@@ -19,15 +19,25 @@
     <script defer type="text/javascript" src="/lib/toolkit/js/chart.toolkit.js"></script>
 
     <script defer type="text/javascript" src="/lib/toolkit/js/dom.toolkit.js"></script>
-    <script defer type="text/javascript" src="/lib/toolkit/js/CRUDPage.js"></script>
+    <script defer type="text/javascript" src="/src/js/view/base/CRUDPage.js"></script>
+    <script defer type="text/javascript" src="/src/js/view/base/SimplePage.js"></script>
     <script defer type="text/javascript" src="/lib/toolkit/js/Pagination.js"></script>
     
-    <script defer type="text/javascript" src="/src/js/components.js"></script>
-    <script defer type="text/javascript" src="/src/js/index.js"></script>
+    <script defer type="text/javascript" src="/src/js/view/components/buttons.js"></script>
+    <script defer type="text/javascript" src="/src/js/view/components/form.js"></script>
+    <script defer type="text/javascript" src="/src/js/view/components/progress-bar.js"></script>
+    <script defer type="text/javascript" src="/src/js/view/components/navbar.js"></script>
+
+    <script defer type="text/javascript" src="/src/js/util/link.js"></script>
+    <script defer type="text/javascript" src="/src/js/util/FormHandler.js"></script>
+    <script defer type="text/javascript" src="/src/js/util/Events.js"></script>
+    <script defer type="text/javascript" src="/src/js/util/api.js"></script>
+
+    <script defer type="text/javascript" src="/lib/swal/js/sweetalert2v11.js"></script>
     <!-- <script type="text/javascript" src="/src/js/script.js"></script> -->
 </head>
 <body>
-    <div id="container">
+    <div id="container" th:with="js_pages='/src/js/view/pages'">
         <aside th:insert="~{/components/sidenav :: sidenav(${active})}"></aside>
         <main th:insert="~{${page} :: content}"></main>
     </div>

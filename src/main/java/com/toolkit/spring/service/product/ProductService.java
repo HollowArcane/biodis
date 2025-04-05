@@ -30,6 +30,27 @@ public class ProductService implements
     OptionService<VLabelProduct, Integer>,
     OperationService<Product, Integer>
 {
+    public static enum ChartGroup
+    {
+        PRODUCT, CATEGORY, SUBCATEGORY;
+
+        public static ChartGroup parseOrDefault(Optional<String> group)
+        {
+            Objects.requireNonNull(group);
+            return group.map(g -> {
+                switch (g.toLowerCase()) {
+                    case "product":
+                        return PRODUCT;
+                    case "category":
+                        return CATEGORY;
+                    default:
+                        return SUBCATEGORY;
+                }
+            }).orElse(SUBCATEGORY);
+        }
+    }
+
+
     @Autowired
     ProductRepository createRepository;
 
@@ -52,19 +73,20 @@ public class ProductService implements
      * @param idProductCategory
      * @return balance data grouped by date, category, subcategory and product
      */
-    public Map<LocalDate, Object> getTableTreeData(LocalDate[] dates, Optional<Integer> idProductCategory)
+    public Map<LocalDate, Object> getTableTreeData(LocalDate[] dates, Optional<Integer> idProductCategory, Optional<Integer> idProductSubcategory)
     {
         Objects.requireNonNull(dates);
         Objects.requireNonNull(idProductCategory);
+        Objects.requireNonNull(idProductSubcategory);
 
         // offset by one day because query is exclusive
         for(int i = 0; i < dates.length; i++)
         { dates[i] = dates[i].plusDays(1); }
 
         Map<LocalDate, Object> result = new HashMap<>();
-        List<VLabelProduct> productsThisDay = idProductCategory
-            .map(id -> readRepository.findAllByIdProductCategory(id))
-            .orElseGet(readRepository::findAll);
+        List<VLabelProduct> productsThisDay = readRepository.findAllByCriteria(
+            idProductCategory.orElse(null), idProductSubcategory.orElse(null)
+        );
 
         for(LocalDate thisDay: dates)
         {
@@ -84,29 +106,51 @@ public class ProductService implements
     /**
      * @param dates: list of date on which balance will be computed (exclusive)
      * @param idProductCategory
+     * @param idProductCategory
+     * @param accumulate
+     * @param group
      * @return balance data grouped by product and date
      */
-    public Map<String, Map<LocalDate, Double>> getChartData(LocalDate[] dates, Optional<Integer> idProductCategory, boolean accumulate)
+    public Map<String, Map<LocalDate, Double>> getChartData(
+        LocalDate[] dates,
+        Optional<Integer> idProductCategory,
+        Optional<Integer> idProductSubcategory,
+        boolean accumulate,
+        ChartGroup group
+    )
     {
         Objects.requireNonNull(dates);
         Objects.requireNonNull(idProductCategory);
+        Objects.requireNonNull(idProductSubcategory);
+        Objects.requireNonNull(group);
 
         Map<String, Map<LocalDate, Double>> result = new HashMap<>();
-        List<VLabelProduct> productsThisDay = idProductCategory
-            .map(id -> readRepository.findAllByIdProductCategory(id))
-            .orElseGet(readRepository::findAll);
+        List<VLabelProduct> productsThisDay = readRepository.findAllByCriteria(
+            idProductCategory.orElse(null), idProductSubcategory.orElse(null)
+        );
 
         if(accumulate)
         {
             for(LocalDate thisDay: dates)
             {
                 Objects.requireNonNull(thisDay);
-                getProductsThisDay(productsThisDay, thisDay);
+                getProductsThisDay(productsThisDay, thisDay, group);
     
                 for(VLabelProduct product: productsThisDay)
                 {
-                    result.computeIfAbsent(product.getLabel(), key -> new HashMap<>())
-                        .put(thisDay, product.getQuantityIn() - product.getQuantityOut());
+                    Map<LocalDate, Double> map = Map.of();
+                    switch (group) {
+                        case PRODUCT:
+                            map = result.computeIfAbsent(product.getProduct(), key -> new HashMap<>());
+                            break;
+                        case SUBCATEGORY:
+                            map = result.computeIfAbsent(product.getProductSubcategory(), key -> new HashMap<>());
+                            break;
+                        case CATEGORY:
+                            map = result.computeIfAbsent(product.getProductCategory(), key -> new HashMap<>());
+                            break;
+                    };;
+                    map.put(thisDay, product.getQuantityIn() - product.getQuantityOut());
                 }
             }
         }
@@ -117,12 +161,23 @@ public class ProductService implements
                 Objects.requireNonNull(dates[i - 1]);
                 Objects.requireNonNull(dates[i]);
     
-                getProductsThisDay(productsThisDay, dates[i - 1] ,dates[i]);
+                getProductsThisDay(productsThisDay, dates[i - 1], dates[i], group);
     
                 for(VLabelProduct product: productsThisDay)
                 {
-                    result.computeIfAbsent(product.getLabel(), key -> new HashMap<>())
-                        .put(dates[i], product.getQuantityIn() - product.getQuantityOut());
+                    Map<LocalDate, Double> map = Map.of();
+                    switch (group) {
+                        case PRODUCT:
+                            map = result.computeIfAbsent(product.getProduct(), key -> new HashMap<>());
+                            break;
+                        case SUBCATEGORY:
+                            map = result.computeIfAbsent(product.getProductSubcategory(), key -> new HashMap<>());
+                            break;
+                        case CATEGORY:
+                            map = result.computeIfAbsent(product.getProductCategory(), key -> new HashMap<>());
+                            break;
+                    };;
+                    map.put(dates[i], product.getQuantityIn() - product.getQuantityOut());
                 }
             }
         }
@@ -133,6 +188,7 @@ public class ProductService implements
     /**
      * @param productsThisDay
      * @param thisDay
+     * @param group by which data will be grouped
      * 
      * ATTENTION!: Use this method with extreme precaution as it changes data directly
      * on the given list of entity, note that since the given entity represents a view,
@@ -141,11 +197,23 @@ public class ProductService implements
      * This method compute the balance of each of the given product at the given date
      * taking into account all mouvement in the past
      */
-    private void getProductsThisDay(List<VLabelProduct> productsThisDay, LocalDate thisDay)
+    private void getProductsThisDay(List<VLabelProduct> productsThisDay, LocalDate thisDay, ChartGroup group)
     {           
         for(VLabelProduct product: productsThisDay)
         {
-            List<VLabelMvtProductStock> data = stocks.findByDateMaxAndIdProduct(thisDay, product.getId());
+            List<VLabelMvtProductStock> data = List.of();
+            switch (group) {
+                case PRODUCT:
+                    data = stocks.findByDateMaxAndIdProduct(thisDay, product.getId(), null, null);
+                    break;
+                case SUBCATEGORY:
+                    data = stocks.findByDateMaxAndIdProduct(thisDay, null, product.getIdProductSubcategory(), null);
+                    break;
+                case CATEGORY:
+                    data = stocks.findByDateMaxAndIdProduct(thisDay, null, null, product.getIdProductCategory());
+                    break;
+            };
+
             double quantityIn = data.stream().collect(
                 Collectors.summingDouble(VLabelMvtProductStock::getQuantityIn)
             );
@@ -160,7 +228,9 @@ public class ProductService implements
 
     /**
      * @param productsThisDay
-     * @param thisDay
+     * @param dateMin
+     * @param dateMax
+     * @param group
      * 
      * ATTENTION!: Use this method with extreme precaution as it changes data directly
      * on the given list of entity, note that since the given entity represents a view,
@@ -169,11 +239,22 @@ public class ProductService implements
      * This method compute the balance of each of the given product at the given date
      * taking into account all mouvement in the past
      */
-    private void getProductsThisDay(List<VLabelProduct> productsThisDay, LocalDate dateMin, LocalDate dateMax)
+    private void getProductsThisDay(List<VLabelProduct> productsThisDay, LocalDate dateMin, LocalDate dateMax, ChartGroup group)
     {           
         for(VLabelProduct product: productsThisDay)
         {
-            List<VLabelMvtProductStock> data = stocks.findByDateMaxAndIdProduct(dateMin, dateMax, product.getId());
+            List<VLabelMvtProductStock> data = List.of();
+            switch (group) {
+                case PRODUCT:
+                    data = stocks.findByDateMaxAndIdProduct(dateMin, dateMax, product.getId(), null, null);
+                    break;
+                case SUBCATEGORY:
+                    data = stocks.findByDateMaxAndIdProduct(dateMin, dateMax, null, product.getIdProductSubcategory(), null);
+                    break;
+                case CATEGORY:
+                    data = stocks.findByDateMaxAndIdProduct(dateMin, dateMax, null, null, product.getIdProductCategory());
+                    break;
+            };
             double quantityIn = data.stream().collect(
                 Collectors.summingDouble(VLabelMvtProductStock::getQuantityIn)
             );

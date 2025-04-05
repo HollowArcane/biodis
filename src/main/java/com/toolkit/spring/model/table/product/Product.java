@@ -31,7 +31,7 @@ public class Product implements ValueObject<Integer>
 
     @Column(name = "threshold_warning")
     @NotNull(message = "le seuil de quantité minimum est obligatoire")
-    private Double thresholdWarning;
+    private double thresholdWarning;
 
     public Integer getId()
     { return id; }
@@ -42,7 +42,7 @@ public class Product implements ValueObject<Integer>
     public Integer getIdProductSubcategory()
     { return idProductSubcategory; }
 
-    public Double getThresholdWarning()
+    public double getThresholdWarning()
     { return thresholdWarning; }
 
     public void setId(Integer id)
@@ -54,6 +54,6 @@ public class Product implements ValueObject<Integer>
     public void setIdProductSubcategory(Integer idProductSubcategory)
     { this.idProductSubcategory = idProductSubcategory; }
 
-    public void setThresholdWarning(Double thresholdWarning)
+    public void setThresholdWarning(double thresholdWarning)
     { this.thresholdWarning = thresholdWarning; }
 }

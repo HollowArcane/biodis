@@ -5,7 +5,7 @@ class CRUDPage
         this.apiPath = apiPath;
         this.btnAdd = btnAdd;
         this.table = table;
-        this.form = new FormHandler(form);
+        this.form = FormHandler.for(form);
     }
 
     init()
@@ -24,7 +24,7 @@ class CRUDPage
             if(response.status === 200)
             { this.render((await response.json()).data); }
             else
-            { alert('Une erreur est survenue. Veuillez réessayer ultérieurement'); }
+            { this.error(response); }
         })
         .catch(this.error.bind(this));
     }
@@ -36,19 +36,25 @@ class CRUDPage
             error.json()
             .then(json => {
                 if(json.error && json.error.message)
-                { alert(json.error.message); }
+                {
+                    const message = json.error.message.trim().toLowerCase();
+                    if(message === 'invalid data given')
+                    { /* do nothing here, errors will be shown directly on inputs */ }
+                    else
+                    { Swal.fire('Erreur', json.error.message, 'error'); }   
+                }
 
                 if(json.error && json.error.details)
                 { this.form.displayErrors(json.error.details); }
             })  
             .catch(error => {
-                alert('Une erreur est survenue. Veuillez réessayer ultérieurement');
+                Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer ultérieurement', 'error');
                 console.error(error);   
             })  
         }
         catch (e)
         {
-            alert('Une erreur est survenue. Veuillez réessayer ultérieurement');
+            Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer ultérieurement', 'error');
             console.error(error);    
         }
     }
@@ -60,7 +66,16 @@ class CRUDPage
             body: this.form.formData()
         }).then(response => {
             if(response.ok)
-            { location.reload(); }
+            {
+                Swal.fire({
+                    title: 'Succès',
+                    text: 'Données insérées avec succès',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                setTimeout(() => location.reload(), 2000);
+            }
             else
             { this.error(response); }
         });
@@ -73,7 +88,16 @@ class CRUDPage
             body: this.form.formData()
         }).then(response => {
             if(response.ok)
-            { location.reload(); }
+            {
+                Swal.fire({
+                    title: 'Succès',
+                    text: 'Données mises à jour avec succès',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                setTimeout(() => location.reload(), 2000);
+            }
             else
             { this.error(response); }
         });
@@ -89,7 +113,16 @@ class CRUDPage
                 method: 'DELETE'
             }).then(response => {
                 if(response.ok)
-                { location.reload(); }
+                {
+                    Swal.fire({
+                        title: 'Succès',
+                        text: 'Données supprimées avec succès',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => location.reload(), 2000);
+                }
                 else
                 { this.error(response); }
             });

@@ -27,6 +27,17 @@
                         </select>
                         <div class="invalid-feedback"></div>
                     </div>
+                    <div class="mb-4">
+                        <label for="idCategory">Sous-Catégorie</label>
+                        <select class="form-select" id="idSubcategory" name="idSubcategory">
+                            <option value="">Tous</option>
+                            <option 
+                                th:each="subcategory : ${subcategories.entrySet()}" 
+                                th:value="${subcategory.key}" 
+                                th:text="${subcategory.value}"></option>
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
                 </div>
             
                 <button class="btn btn-success"> Valider </button>
@@ -37,5 +48,5 @@
     <table id="table" class="table table-striped fx__table">
         <!-- rendered using js -->
     </table>
-    <script defer type="text/javascript" src="/src/js/stock/balance.js"></script>
+    <script defer type="text/javascript" th:src="${js_pages + '/stock/balance.js'}"></script>
 </div>

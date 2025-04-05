@@ -18,11 +18,11 @@ public interface VLabelMvtProductStockRepository extends JpaRepository<VLabelMvt
     @Query(nativeQuery = true, value = "SELECT * FROM v_label_mvt_product_stock WHERE date > :dateMin AND date <= :dateMax ORDER BY date ASC")
     List<VLabelMvtProductStock> findByDateMinDateMax(LocalDate dateMin, LocalDate dateMax);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM v_label_mvt_product_stock WHERE date < :dateMax AND id_product = :idProduct ORDER BY date ASC")
-    List<VLabelMvtProductStock> findByDateMaxAndIdProduct(LocalDate dateMax, Integer idProduct);
+    @Query(nativeQuery = true, value = "SELECT * FROM v_label_mvt_product_stock WHERE date < :dateMax AND (:idProduct IS NULL OR id_product = :idProduct)AND (:idSubcategory IS NULL OR id_product_subcategory = :idSubcategory)AND (:idCategory IS NULL OR id_product_category = :idCategory) ORDER BY date ASC")
+    List<VLabelMvtProductStock> findByDateMaxAndIdProduct(LocalDate dateMax, Integer idProduct, Integer idSubcategory, Integer idCategory);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM v_label_mvt_product_stock WHERE date >= :dateMin AND date < :dateMax AND id_product = :idProduct ORDER BY date ASC")
-    List<VLabelMvtProductStock> findByDateMaxAndIdProduct(LocalDate dateMin, LocalDate dateMax, Integer idProduct);
+    @Query(nativeQuery = true, value = "SELECT * FROM v_label_mvt_product_stock WHERE date >= :dateMin AND date < :dateMax AND (:idProduct IS NULL OR id_product = :idProduct)AND (:idSubcategory IS NULL OR id_product_subcategory = :idSubcategory)AND (:idCategory IS NULL OR id_product_category = :idCategory) ORDER BY date ASC")
+    List<VLabelMvtProductStock> findByDateMaxAndIdProduct(LocalDate dateMin, LocalDate dateMax, Integer idProduct, Integer idSubcategory, Integer idCategory);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT date FROM v_label_mvt_product_stock WHERE date < :dateMax ORDER BY date DESC LIMIT :sampleCount")
     LocalDate[] findLatestSampleDate(LocalDate dateMax, int sampleCount);

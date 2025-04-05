@@ -2,7 +2,9 @@ package com.toolkit.spring.controller.stock;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import com.toolkit.spring.model.table.stock.MvtProductStock;
 import com.toolkit.spring.service.product.ProductCategoryService;
 import com.toolkit.spring.service.product.ProductService;
 import com.toolkit.spring.service.product.ProductSubcategoryService;
+import com.toolkit.spring.service.product.ProductService.ChartGroup;
 import com.toolkit.spring.service.stock.MvtProductStockService;
 import com.toolkit.spring.util.APIResponse;
 import com.toolkit.spring.util.DateRange;
@@ -120,6 +123,7 @@ public class ProductStockController extends BaseController
     public ModelAndView chart(Model model)
     {
         model.addAttribute("categories", categories.options());
+        model.addAttribute("subcategories", subcategories.options());
         model.addAttribute("active", "/stock/chart/page");
         model.addAttribute("today", LocalDate.now());
         return render("stock/chart").title("Graphique d'Évolution du Stock")
@@ -128,15 +132,16 @@ public class ProductStockController extends BaseController
 
     @GetMapping("/chart")
     public ResponseEntity<APIResponse> chart(
-        @RequestParam(name = "date", required = false) LocalDate date,
+        @RequestParam(name = "date") Optional<LocalDate> optDate,
         @RequestParam(name = "nSamples", defaultValue = "12") int nSamples,
         @RequestParam(name = "idCategory") Optional<Integer> idCategory,
+        @RequestParam(name = "idSubcategory") Optional<Integer> idSubcategory,
         @RequestParam(name = "sampleType") String sampleType,
-        @RequestParam(name = "accumulate") String accumulate
+        @RequestParam(name = "accumulate") String accumulate,
+        @RequestParam(name = "group") Optional<String> group
     )
     {
-        if(date == null)
-        { date = LocalDate.now(); }
+        LocalDate date = optDate.orElse(LocalDate.now());
         if(nSamples <= 0)
         { nSamples = 1; }
 
@@ -152,9 +157,11 @@ public class ProductStockController extends BaseController
         else // expects ("month".equals(sampleType))
         { dates = DateRange.monthsAsc(date, nSamples); }
 
-        Map<String, Map<LocalDate, Double>> chart = products.getChartData(dates, idCategory, acc);
+        Map<String, Map<LocalDate, Double>> chart = products.getChartData(dates, idCategory, idSubcategory, acc, ChartGroup.parseOrDefault(group));
     
         return APIResponse.success(200, Map.of(
+            "categories", categories.findAll(),
+            "subcategories", subcategories.findAll(),
             "data", chart,
             "dates", dates
         ));
@@ -164,6 +171,7 @@ public class ProductStockController extends BaseController
     public ModelAndView balance(Model model)
     {
         model.addAttribute("categories", categories.options());
+        model.addAttribute("subcategories", subcategories.options());
         model.addAttribute("active", "/stock/balance/page");
         model.addAttribute("today", LocalDate.now());
 
@@ -172,19 +180,21 @@ public class ProductStockController extends BaseController
 
     @GetMapping("/balance")
     public ResponseEntity<APIResponse> balance(
-        @RequestParam(name = "date", required = false) LocalDate date,
+        @RequestParam(name = "date") Optional<LocalDate> optDate,
         @RequestParam(name = "ndays", defaultValue = "7") int ndays,
-        @RequestParam(name = "idCategory") Optional<Integer> idCategory
+        @RequestParam(name = "idCategory") Optional<Integer> idCategory,
+        @RequestParam(name = "idSubcategory") Optional<Integer> idSubcategory
     )
     {
-        if(date == null)
-        { date = LocalDate.now(); }
+        LocalDate date = optDate.orElse(LocalDate.now());
         if(ndays <= 0)
         { ndays = 1; }
 
         LocalDate[] dates = stocks.findLatestSampleDate(date, ndays);
         return APIResponse.success(200, Map.of(
-            "data", products.getTableTreeData(dates, idCategory),
+            "categories", categories.findAll(),
+            "subcategories", subcategories.findAll(),
+            "data", products.getTableTreeData(dates, idCategory, idSubcategory),
             "dates", dates
         ));
     }
@@ -192,15 +202,15 @@ public class ProductStockController extends BaseController
 
     @GetMapping("/pdf")
     public void pdf(
-        @RequestParam(name = "date", required = false) LocalDate date,
+        @RequestParam(name = "date") Optional<LocalDate> optDate,
         @RequestParam(name = "ndays", defaultValue = "7") int ndays,
         @RequestParam(name = "idCategory") Optional<Integer> idCategory,
+        @RequestParam(name = "idSubcategory") Optional<Integer> idSubcategory,
         HttpServletResponse response,
         Model model
     )
     {
-        if(date == null)
-        { date = LocalDate.now(); }
+        LocalDate date = optDate.orElse(LocalDate.now());
         if(ndays <= 0)
         { ndays = 1; }
 
@@ -219,7 +229,7 @@ public class ProductStockController extends BaseController
             };
 
             LocalDate[] dates = stocks.findLatestSampleDate(date, ndays);
-            model.addAttribute("data", products.getTableTreeData(dates, idCategory));
+            model.addAttribute("data", products.getTableTreeData(dates, idCategory, idSubcategory));
             model.addAttribute("ndays", ndays);
             model.addAttribute("today", date);
             model.addAttribute("dates", dates);
@@ -231,7 +241,6 @@ public class ProductStockController extends BaseController
             model.asMap().forEach(context::setVariable);
     
             String htmlContent = templateEngine.process("/pages/stock/pdf", context);
-            // System.out.println(htmlContent);
 
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "inline; filename=stock-balance.pdf");

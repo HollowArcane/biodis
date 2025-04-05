@@ -1,6 +1,6 @@
 + fix stock-balance-loading
-- change repositories to services inside controllers
-- load v_label on read
++ change repositories to services inside controllers
++ load v_label on read
 
 
 STATS:
@@ -22,9 +22,6 @@ STATS:
       - chart(dateMin, dateMax, idSubcategory)
 
 
-- only choose date with existing data
 - group chart by subcategory (maybe make multiple choice)
-- make chart by week and by month per year
 - client
 - facture
-- make all view access json if possible, or use dto instead
