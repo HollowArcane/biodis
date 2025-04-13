@@ -19,14 +19,19 @@ class CRUDPage
 
     read(page)
     {
-        fetch(`${this.apiPath}?page=${page}`)
-        .then(async (response) => {
-            if(response.status === 200)
-            { this.render((await response.json()).data); }
-            else
-            { this.error(response); }
-        })
-        .catch(this.error.bind(this));
+        try
+        {
+            fetch(`${this.apiPath}?page=${page}`)
+            .then(async (response) => {
+                if(response.status === 200)
+                { this.render((await response.json()).data); }
+                else
+                { this.error(response); }
+            })
+            .catch(this.error.bind(this));
+        }
+        catch (error)
+        { this.error(error); }
     }
 
     error(error)
@@ -41,82 +46,55 @@ class CRUDPage
                     if(message === 'invalid data given')
                     { /* do nothing here, errors will be shown directly on inputs */ }
                     else
-                    { Swal.fire('Erreur', json.error.message, 'error'); }   
+                    { Swal.fire({
+                        title: 'Erreur',
+                        text: json.error.message,
+                        icon: 'error'
+                    }); }   
                 }
 
                 if(json.error && json.error.details)
                 { this.form.displayErrors(json.error.details); }
+                else
+                { Swal.fire({
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue. Veuillez réessayer ultérieurement',
+                    icon: 'error'
+                }); }  
             })  
             .catch(error => {
-                Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer ultérieurement', 'error');
+                Swal.fire({
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue. Veuillez réessayer ultérieurement',
+                    icon: 'error'
+                });
                 console.error(error);   
             })  
         }
         catch (e)
         {
-            Swal.fire('Erreur', 'Une erreur est survenue. Veuillez réessayer ultérieurement', 'error');
+            Swal.fire({
+                title: 'Erreur',
+                text: 'Une erreur est survenue. Veuillez réessayer ultérieurement',
+                icon: 'error'
+            });
             console.error(error);    
         }
     }
 
     create()
     {
-        fetch(this.apiPath, {
-            method: 'POST',
-            body: this.form.formData()
-        }).then(response => {
-            if(response.ok)
-            {
-                Swal.fire({
-                    title: 'Succès',
-                    text: 'Données insérées avec succès',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                setTimeout(() => location.reload(), 2000);
-            }
-            else
-            { this.error(response); }
-        });
-    }
-
-    update(id)
-    {
-        fetch(`${this.apiPath}/${id}`, {
-            method: 'PUT',
-            body: this.form.formData()
-        }).then(response => {
-            if(response.ok)
-            {
-                Swal.fire({
-                    title: 'Succès',
-                    text: 'Données mises à jour avec succès',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                setTimeout(() => location.reload(), 2000);
-            }
-            else
-            { this.error(response); }
-        });
-    }
-
-    delete(id)
-    {
-        const result = confirm('Êtes-vous sûr de vouloir supprimer cet élément?');
-
-        if(result === true)
+        try
         {
-            fetch(`${this.apiPath}/${id}`, {
-                method: 'DELETE'
+            fetch(this.apiPath, {
+                method: 'POST',
+                body: this.form.formData()
             }).then(response => {
                 if(response.ok)
                 {
                     Swal.fire({
                         title: 'Succès',
-                        text: 'Données supprimées avec succès',
+                        text: 'Données insérées avec succès',
                         icon: 'success',
                         timer: 2000,
                         showConfirmButton: false
@@ -125,7 +103,71 @@ class CRUDPage
                 }
                 else
                 { this.error(response); }
-            });
+            })
+            .catch(this.error.bind(this));
+        }
+        catch (error)
+        { this.error(error); }
+    }
+
+    update(id)
+    {
+        try
+        {
+            fetch(`${this.apiPath}/${id}`, {
+                method: 'PUT',
+                body: this.form.formData()
+            }).then(response => {
+                if(response.ok)
+                {
+                    Swal.fire({
+                        title: 'Succès',
+                        text: 'Données mises à jour avec succès',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    setTimeout(() => location.reload(), 2000);
+                }
+                else
+                { this.error(response); }
+            })
+            .catch(this.error.bind(this));
+        }
+        catch (error)
+        { this.error(error); }
+    }
+
+    delete(id)
+    {
+        const result = confirm('Êtes-vous sûr de vouloir supprimer cet élément?');
+
+        if(result === true)
+        {
+            try
+            {
+                fetch(`${this.apiPath}/${id}`, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if(response.ok)
+                    {
+                        Swal.fire({
+                            title: 'Succès',
+                            text: 'Données supprimées avec succès',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                    else
+                    { this.error(response); }
+                })
+            .catch(this.error.bind(this));
+            
+            }
+            catch (error)
+            { this.error(error); }
         }
     }
 }

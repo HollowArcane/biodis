@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.toolkit.spring.controller.BaseController;
+import com.toolkit.spring.controller.shared.BaseController;
 import com.toolkit.spring.model.table.product.Product;
 import com.toolkit.spring.service.product.ProductCategoryService;
 import com.toolkit.spring.service.product.ProductService;
@@ -28,7 +28,7 @@ import com.toolkit.spring.util.response.ValidationErrorResponse;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/product/product")
 public class ProductController extends BaseController
 {
     private static final Pageable pagination = Pageable.ofSize(10);
@@ -46,10 +46,10 @@ public class ProductController extends BaseController
     public ModelAndView list(Model model)
     {
         model.addAttribute("product", new Product());
-        model.addAttribute("active", "/product/page");
+        model.addAttribute("active", "/product/product/page");
         loadOptions(model);
 
-        return render("product/index").title("Produit").with(model);
+        return render("product/product/index").title("Produit").with(model);
     }
 
     public void loadOptions(Model model)

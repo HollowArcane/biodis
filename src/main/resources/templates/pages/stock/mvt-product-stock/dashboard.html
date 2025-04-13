@@ -1,0 +1,5 @@
+<div th:fragment="content">
+    <div th:replace="~{'/pages/stock/mvt-product-stock/sections/balance'::content}"></div>
+    <div th:replace="~{'/pages/stock/mvt-product-stock/sections/chart'::content}"></div>
+    <script defer type="text/javascript" th:src="${js_pages + '/stock/mvt-product-stock/dashboard.js'}"></script>
+</div>

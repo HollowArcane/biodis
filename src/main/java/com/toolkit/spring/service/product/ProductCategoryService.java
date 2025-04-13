@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.toolkit.spring.model.table.product.ProductCategory;
 import com.toolkit.spring.repository.table.product.ProductCategoryRepository;
-import com.toolkit.spring.service.OperationService;
-import com.toolkit.spring.service.OptionService;
-import com.toolkit.spring.service.ReadService;
+import com.toolkit.spring.service.interfaces.OperationService;
+import com.toolkit.spring.service.interfaces.OptionService;
+import com.toolkit.spring.service.interfaces.ReadService;
 
 @Service
 public class ProductCategoryService implements

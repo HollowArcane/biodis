@@ -10,8 +10,8 @@ import com.toolkit.spring.model.table.stock.MvtProductStock;
 import com.toolkit.spring.model.view.stock.VLabelMvtProductStock;
 import com.toolkit.spring.repository.table.stock.MvtProductStockRepository;
 import com.toolkit.spring.repository.view.stock.VLabelMvtProductStockRepository;
-import com.toolkit.spring.service.OperationService;
-import com.toolkit.spring.service.ReadService;
+import com.toolkit.spring.service.interfaces.OperationService;
+import com.toolkit.spring.service.interfaces.ReadService;
 
 @Service
 public class MvtProductStockService implements

@@ -1,11 +1,9 @@
 package com.toolkit.spring.controller.misc;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ import com.toolkit.spring.util.APIResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
-@RequestMapping("/image")
+@RequestMapping("/misc/image")
 public class ImageController
 {
 
@@ -91,7 +89,7 @@ public class ImageController
             Context context = new Context();
             model.asMap().forEach(context::setVariable);
     
-            String htmlContent = templateEngine.process("/pages/image/pdf", context);
+            String htmlContent = templateEngine.process("/pages/misc/image/pdf", context);
 
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "inline; filename=" + exportName + ".pdf");

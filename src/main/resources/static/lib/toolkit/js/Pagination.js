@@ -36,7 +36,7 @@ class Pagination
         const min = Math.max(cstrActive - this.spread - 1 - this.side, 1);
 
         const length = max - min + 1;
-        const pages = [].fill(null, 0, length);
+        const pages = Array(length).fill(null);
 
         for(let i = 0; i < this.side && i < this.npage; i++)
         {
@@ -45,7 +45,7 @@ class Pagination
         }
 
         const start = Math.max(cstrActive - min - this.spread, 0);
-        const finish = Math.max(cstrActive - min - this.spread, 0);
+        const finish = Math.min(cstrActive - min + this.spread, length - 1);
 
         for(let i = start; i <= finish; i++)
         { pages[i] = this.createPage(i + min); }
@@ -75,10 +75,10 @@ class Pagination
         {
             if(parseInt(element.textContent) === page)
             { element.classList.add('active'); }
-            element.onclick = e => {
+            element.onclick = () => {
                 const page = parseInt(element.textContent);
                 this.callback(page);
-                this.setActive(page)
+                this.setActive(page);
             };
             this.container.append(element);
         }

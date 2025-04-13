@@ -3,29 +3,50 @@ class FormHandler
 {
     constructor(form)
     {
-        this.form = form;
+        if (!(form instanceof HTMLFormElement))
+        { throw new Error('Provided element must be a <form> element.'); }
+        this._form = form;
     }
 
     static for(form)
     { return new FormHandler(form); }
 
+    // please always specify params to inmprove readability and control
+    queryParams(params)
+    {
+        const formData = this.formData();
+        let query = '';
+        // params = params || formData.keys();
+
+        for(const key of params)
+        {
+            if(formData.get(key) !== null)
+            { query += `${key}=${formData.get(key)}&`; }
+        } 
+
+        return query.substring(0, query.length - 1);
+    }
+
     formData()
-    { return new FormData(form); }
+    { return new FormData(this._form); }
 
     onsubmit(callback)
     {
-        this.form.onsubmit = e => {
+        this._form.onsubmit = e => {
             e.preventDefault();
             callback();
         }
     }
+
+    triggerOnsubmit()
+    { this._form.dispatchEvent(new Event('submit')); }
 
     load(data)
     {
         this.reset()
         for(let key in data)
         {
-            const inputs = this.form.querySelectorAll(`input[name="${key}"], select[name="${key}"]`);
+            const inputs = this._form.querySelectorAll(`input[name="${key}"], select[name="${key}"]`);
             for(const input of inputs)
             {
                 input.value = data[key];
@@ -35,13 +56,13 @@ class FormHandler
 
     reset()
     {
-        this.form.reset();
+        this._form.reset();
         this.resetErrors();
     }
 
     resetErrors()
     {
-        const inputs = this.form.querySelectorAll('input, select');
+        const inputs = this._form.querySelectorAll('input, select');
         for(const input of inputs)
         {
             input.classList.remove('is-invalid');
@@ -60,7 +81,7 @@ class FormHandler
         this.resetErrors();
         for(let key in errors)
         {
-            const inputs = this.form.querySelectorAll(`input[name="${key}"], select[name="${key}"]`);
+            const inputs = this._form.querySelectorAll(`input[name="${key}"], select[name="${key}"]`);
             for(const input of inputs)
             {
                 input.classList.add('is-invalid');     

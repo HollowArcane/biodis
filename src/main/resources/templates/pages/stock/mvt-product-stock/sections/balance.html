@@ -1,0 +1,62 @@
+<div th:fragment="content" class="container mt-5">
+    <style>
+        #table * {
+            padding: 10px;
+        }
+
+        #table td:first-child, #table th:first-child {
+            width: 500px !important;
+        }
+    </style>
+
+    <h1 class="d-flex gap-1 align-items-center mb-3">
+        <button id="btn-pdf" type="button" class="btn btn-secondary text-danger" data-mdb-tooltip-init title="Exporter PDF" data-mdb-ripple-init>
+            <i class="fa fa-file-pdf"></i>
+        </button>
+        <button type="button" class="btn btn-secondary text-success" data-mdb-tooltip-init title="Filtrer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modal">
+            <i class="fa fa-filter"></i>
+        </button>
+        Bilan Journalier du Stock
+    </h1>
+    
+    <div th:replace="~{/components/modal :: modal(name='modal', title='Filtre', body=~{:: modalBody})}">
+        <div th:fragment="modalBody">
+            <form th:fragment="content" id="form" action="/stock/balance" method="GET">
+                <div th:replace="~{/components/form :: input('ndays', 7, 'number', 'Nombre de Jours')}"></div>
+                <div th:replace="~{/components/form :: input('date', ${today}, 'date', 'Date')}"></div>
+                <!-- select component -->
+                <div>
+                    <div class="mb-4">
+                        <label for="idCategory">Catégorie</label>
+                        <select class="form-select" id="idCategory" name="idCategory">
+                            <option value="">Tous</option>
+                            <option 
+                                th:each="category : ${categories.entrySet()}" 
+                                th:value="${category.key}" 
+                                th:text="${category.value}"></option>
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="idCategory">Sous-Catégorie</label>
+                        <select class="form-select" id="idSubcategory" name="idSubcategory">
+                            <option value="">Tous</option>
+                            <option 
+                                th:each="subcategory : ${subcategories.entrySet()}" 
+                                th:value="${subcategory.key}" 
+                                th:text="${subcategory.value}"></option>
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                </div>
+            
+                <button class="btn btn-success"> Valider </button>
+            </form>
+        </div>
+    </div>
+
+    <table id="table" class="table table-striped fx__table">
+        <!-- rendered using js -->
+    </table>
+    <script defer type="text/javascript" th:src="${js_pages + '/stock/mvt-product-stock/balance.js'}"></script>
+</div>

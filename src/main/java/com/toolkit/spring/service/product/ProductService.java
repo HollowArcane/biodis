@@ -19,9 +19,9 @@ import com.toolkit.spring.model.view.stock.VLabelMvtProductStock;
 import com.toolkit.spring.repository.table.product.ProductRepository;
 import com.toolkit.spring.repository.view.product.VLabelProductRepository;
 import com.toolkit.spring.repository.view.stock.VLabelMvtProductStockRepository;
-import com.toolkit.spring.service.OperationService;
-import com.toolkit.spring.service.OptionService;
-import com.toolkit.spring.service.ReadService;
+import com.toolkit.spring.service.interfaces.OperationService;
+import com.toolkit.spring.service.interfaces.OptionService;
+import com.toolkit.spring.service.interfaces.ReadService;
 import com.toolkit.spring.util.Groups;
 
 @Service

@@ -1,0 +1,162 @@
+<div th:fragment="content" class="container mt-5">
+    <h1 class="d-flex gap-1 align-items-center mb-3">
+        <button type="button" class="btn btn-secondary text-success" data-mdb-tooltip-init title="Filtrer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalFilter">
+            <i class="fa fa-filter"></i>
+        </button>
+        <button type="button" class="btn btn-secondary text-success" data-mdb-tooltip-init title="Configurer" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#modalConfig">
+            <i class="fa fa-gear"></i>
+        </button>
+        Graphique d'Évolution de Stock
+    </h1>
+    
+    <div th:replace="~{/components/modal :: modal(name='modalConfig', title='Configuration', body=~{:: modalBodyConfig})}">
+        <div th:fragment="modalBodyConfig">
+            <form th:fragment="content" id="formConfig" action="/stock/chart" method="GET">
+        
+                <div class="border p-3 m-3">
+                    <div th:replace="~{/components/form :: input('chartNSamples', 12, 'number', 'Nombre d\'Échantillons')}"></div>
+                    <div th:replace="~{/components/form :: input('chartDate', ${today}, 'date', 'Date de Référence')}"></div>
+                    
+                    <div class="mb-4">
+                        <p>Type de Bilan</p>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartSampleType" class="form-check-input" id="chartSampleType-month" value="month" checked />
+                                <label class="form-check-label" for="chartSampleType-month">Mensuel</label>
+                            </div>
+                                
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartSampleType" class="form-check-input" id="chartSampleType-week" value="week" />
+                                <label class="form-check-label" for="chartSampleType-week">Hebdomadaire</label>
+                            </div>
+                            
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartSampleType" class="form-check-input" id="chartSampleType-day" value="day" />
+                                <label class="form-check-label" for="chartSampleType-day">Journalier</label>
+                            </div>
+                                
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartSampleType" class="form-check-input" id="chartSampleType-year" value="year" />
+                                <label class="form-check-label" for="chartSampleType-year">Annuel</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <p>Disposition</p>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartDisposition" class="form-check-input" id="chartDisposition-x" value="x" checked />
+                                <label class="form-check-label" for="chartDisposition-x">Horizontal</label>
+                            </div>
+                                
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartDisposition" class="form-check-input" id="chartDisposition-y" value="y" />
+                                <label class="form-check-label" for="chartDisposition-y">Vertical</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="chartAccumulate" value="chartAccumulate" id="accumulate"/>
+                            <label class="form-check-label" for="chartAccumulate">Accumuler</label>
+                          </div>
+                    </div>
+                </div>
+            
+                <button class="btn btn-success"> Valider </button>
+            </form>
+        </div>
+    </div>
+    
+    <div th:replace="~{/components/modal :: modal(name='modalFilter', title='Filtre', body=~{:: modalBodyFilter})}">
+        <div th:fragment="modalBodyFilter">
+            <form th:fragment="content" id="formFilter" action="/stock/chart" method="GET">
+        
+                <div class="border p-3">
+                    <div>
+                        <div class="mb-4">
+                            <label for="chartIdCategory">Catégorie</label>
+                            <select class="form-select" id="chartIdCategory" name="chartIdCategory">
+                                <option value="">Tous</option>
+                                <option 
+                                    th:each="category : ${categories.entrySet()}" 
+                                    th:value="${category.key}" 
+                                    th:text="${category.value}" 
+                                    th:selected="${category.key == value}"></option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="chartIdSubcategory">Sous-Catégorie</label>
+                            <select class="form-select" id="chartIdSubcategory" name="chartIdSubcategory">
+                                <option value="">Tous</option>
+                                <option 
+                                    th:each="subcategory : ${subcategories.entrySet()}" 
+                                    th:value="${subcategory.key}" 
+                                    th:text="${subcategory.value}"></option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-4">
+                            <p>Groupé Par</p>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartGroup" class="form-check-input" id="chartGroup-subcategory" value="subcategory" checked />
+                                <label class="form-check-label" for="chartGroup-subcategory">Sous-Catégorie</label>
+                            </div>
+                                
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartGroup" class="form-check-input" id="chartGroup-category" value="category" />
+                                <label class="form-check-label" for="chartGroup-category">Catégorie</label>
+                            </div>
+                                
+                            <div class="form-check form-check-inline">
+                                <input type="radio" name="chartGroup" class="form-check-input" id="chartGroup-product" value="product" />
+                                <label class="form-check-label" for="chartGroup-product">Produit</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div>
+                        <div class="mb-4">
+                            <label for="chartType">Type de Graphique</label>
+                            <select class="form-select" id="chartType" name="chartType">
+                                <option value="line">Ligne</option>
+                                <option value="bar">Bar</option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div> -->
+                </div>
+
+                <button class="btn btn-success"> Valider </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <button onclick="
+            chartNSamples.value = 12;
+            document.getElementById('chartSampleType-month').checked = true;
+            document.getElementById('chartDisposition-x').checked = true;
+            formConfig.dispatchEvent(new Event('submit'));
+        " class="btn btn-outline-success" type="button"> Bilan Mensuel de l'An </button>
+        <button onclick="
+            chartNSamples.value = 52;
+            document.getElementById('chartSampleType-week').checked = true;
+            document.getElementById('chartDisposition-x').checked = true;
+            formConfig.dispatchEvent(new Event('submit'));
+            " class="btn btn-outline-success" type="button"> Bilan Hebdomadaire de l'An </button>
+        <button onclick="
+            chartNSamples.value = 1;
+            document.getElementById('chartSampleType-year').checked = true;
+            document.getElementById('chartDisposition-y').checked = true;
+            formConfig.dispatchEvent(new Event('submit'));
+            " class="btn btn-outline-success" type="button"> Bilan de l'An </button>
+    </div>
+
+    <p id="message"></p>
+    <div style="height: 250px; position: relative; width: 100%;">
+        <canvas id="chart"><!-- rendered using js --></canvas>
+    </div>
+    <script defer type="text/javascript" th:src="${js_pages + '/stock/mvt-product-stock/chart.js'}"></script>
+</div>

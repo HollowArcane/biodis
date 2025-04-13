@@ -39,6 +39,25 @@ public class DateRange
         return dates;
     }
 
+    public static LocalDate[] yearsAsc(LocalDate initialDate, int nyears)
+    {
+        Objects.requireNonNull(initialDate);
+        LocalDate[] dates = new LocalDate[nyears];
+
+        // make date be the first of next year to cover
+        // the entire current year
+        initialDate = LocalDate.of(
+            initialDate.getYear() + 1,
+            1,
+            1
+        );
+
+        for(int i = 0; i < nyears; i++)
+        { dates[nyears - i - 1] = initialDate.plusYears(-i); }
+
+        return dates;
+    }
+
     public static LocalDate[] weeksAsc(LocalDate initialDate, int nweeks)
     {
         Objects.requireNonNull(initialDate);

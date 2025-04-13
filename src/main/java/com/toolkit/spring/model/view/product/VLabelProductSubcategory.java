@@ -1,6 +1,6 @@
 package com.toolkit.spring.model.view.product;
 
-import com.toolkit.spring.model.ValueObject;
+import com.toolkit.spring.model.interfaces.IItem;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "v_label_product_subcategory")
-public class VLabelProductSubcategory implements ValueObject<Integer>
+public class VLabelProductSubcategory implements IItem<Integer>
 {
     @Id
     private Integer id;

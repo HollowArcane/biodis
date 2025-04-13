@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.toolkit.spring.controller.BaseController;
+import com.toolkit.spring.controller.shared.BaseController;
 import com.toolkit.spring.model.table.product.ProductSubcategory;
 import com.toolkit.spring.service.product.ProductCategoryService;
 import com.toolkit.spring.service.product.ProductSubcategoryService;
@@ -27,7 +27,7 @@ import com.toolkit.spring.util.response.ValidationErrorResponse;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/product-subcategory")
+@RequestMapping("/product/product-subcategory")
 public class ProductSubcategoryController extends BaseController
 {
     @Autowired
@@ -42,10 +42,10 @@ public class ProductSubcategoryController extends BaseController
     public ModelAndView list(Model model)
     {
         model.addAttribute("subcategory", new ProductSubcategory());
-        model.addAttribute("active", "/product-subcategory/page");
+        model.addAttribute("active", "/product/product-subcategory/page");
         loadOptions(model);
 
-        return render("product-subcategory/index").title("Sous-catégorie de Produit").with(model);
+        return render("product/product-subcategory/index").title("Sous-catégorie de Produit").with(model);
     }
 
     public void loadOptions(Model model)

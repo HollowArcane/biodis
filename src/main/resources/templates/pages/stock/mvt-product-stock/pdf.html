@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title> Bilan de Stock </title>
+    <style>
+        @page {
+            size: A4 landscape; /* Set page size to A4 and orientation to landscape */
+            margin: 1cm; /* Set margins */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        p {
+            font-size: 14px;
+        }
+        table {
+            border: solid black;
+            border-collapse: collapse;
+            border-width: 1px;
+
+            width: 100%;
+        }
+
+        table tr {
+            height: 30px;
+        }
+
+        table th {
+            text-transform: uppercase;
+        }
+
+        table th, table td {
+            font-size: 10px;
+            padding: 4px;
+        }
+        
+        .odd-col {
+            background-color: rgb(247, 247, 247);
+        }
+
+        .odd-row {
+            background-color: rgb(240, 240, 240);
+        }
+
+        .even-row {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1> Bilan de Stock </h1>
+    <p> Bilan des <span th:text="${ndays}"></span> derniers jours à partir de <span th:text="${today}"></span> </p>
+
+    <table>
+        <thead th:with="categories=${data.get(dates[0])}">
+            <tr style="color: white;">
+                <th></th>
+                <th th:style="${'background-color: ' + COLORS_1[category.key.id % COLORS_1.length]}" th:each="category : ${categories.entries}" th:text="${category.key.label}" th:colspan="${3 * category.value.nestedSize}"></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th:block th:each="category : ${categories.entries}">
+                    <th th:style="${'background-color: ' + COLORS_2[subcategory.key.id % COLORS_2.length]}" th:each="subcategory : ${category.value.entries}" th:text="${subcategory.key.label}" th:colspan="${3 * subcategory.value.nestedSize}"></th>
+                </th:block>
+            </tr>
+            <tr>
+                <th></th>
+                <th:block th:each="category : ${categories.entries}">
+                    <th:block th:each="subcategory : ${category.value.entries}">
+                        <th th:style="${'background-color: ' + COLORS_3[product.key.id % COLORS_3.length]}" th:each="product : ${subcategory.value.entries}" th:text="${product.key.label}" colspan="3"></th>
+                    </th:block>
+                </th:block>
+            </tr>
+            <tr>
+                <th> Date </th>
+                <th:block th:each="category : ${categories.entries}">
+                    <th:block th:each="subcategory : ${category.value.entries}">
+                        <th:block th:each="product : ${subcategory.value.entries}">
+                            <th> Entrée </th>
+                            <th> Sortie </th>
+                            <th class="odd-col"> Solde </th>
+                        </th:block>
+                    </th:block>
+                </th:block>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="record, iter : ${data}" th:class="${iter.odd ? 'odd-row' : 'even-row'}">
+                <td th:text="${record.key}"></td>
+                <th:block th:each="category : ${record.value.entries}">
+                    <th:block th:each="subcategory : ${category.value.entries}">
+                        <th:block th:each="product : ${subcategory.value.entries}">
+                            <td align="right" th:text="${product.value[0].quantityIn}"></td>
+                            <td align="right" th:text="${product.value[0].quantityOut}"></td>
+                            <td align="right" th:text="${product.value[0].balance}"  th:class="${iter.odd ? 'odd-row': ''} + ' odd-col'"></td>
+                        </th:block>
+                    </th:block>
+                </th:block>
+            </tr>
+        </tbody>
+    </table>
+
+    <p th:text="${chartTitle}"></p>
+    <img style="width: 100%; height: auto;" th:src="${chartImage}"></img>
+</body>
+</html>
