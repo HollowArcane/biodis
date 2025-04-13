@@ -73,7 +73,7 @@ class ChartSection extends SimplePage
     {
         const formdata = this.formConfig.formData();
         const nSamples = parseInt(formdata.get('chartNSamples'));
-        const date = parseInt(formdata.get('chartDate'));
+        const date = formdata.get('chartDate');
         let timeUnit = ChartSection.TIME_UNITS[formdata.get('chartSampleType')];
         if(nSamples > 1 && !timeUnit.endsWith('s'))
         {
