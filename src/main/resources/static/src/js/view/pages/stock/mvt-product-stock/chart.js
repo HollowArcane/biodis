@@ -1,7 +1,7 @@
 class ChartSection extends SimplePage
 {
     static MONTHS = ['Jan', 'Fév', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
-    static TIME_UNITS = {month: 'Mois', week: 'Semaine', day: 'Jour'};
+    static TIME_UNITS = {month: 'Mois', week: 'Semaine', day: 'Jour', year: 'An'};
     static OPTION_PARAMS = {value: 'id', label: 'label'};
     static ALL = {id: '', label: 'Tous'};
 
@@ -73,15 +73,21 @@ class ChartSection extends SimplePage
     {
         const formdata = this.formConfig.formData();
         const nSamples = parseInt(formdata.get('chartNSamples'));
-        const date = formdata.get('chartDate');
-        let timeUnit = ChartSection.TIME_UNITS[formdata.get('chartSampleType')];
-        if(nSamples > 1 && !timeUnit.endsWith('s'))
+        let timeUnit = ChartSection.TIME_UNITS[formdata.get('chartSampleType')] || TIME_UNITS.month;
+        if(nSamples > 1)
         {
-            timeUnit += 's';
-            return `Graphique du Bilan des ${nSamples} derniers ${timeUnit} à partir du ${date}`;
+            if(!timeUnit.endsWith('s'))
+            { timeUnit += 's'; }
+            if(timeUnit === 'Semaines')
+            { return `Graphique du Bilan des ${nSamples} dernières ${timeUnit}`; }
+            return `Graphique du Bilan des ${nSamples} derniers ${timeUnit}`;
         }
         else
-        { return `Bilan du dernier ${timeUnit} à partir du ${date}`; }
+        {
+            if(timeUnit === 'Semaine')
+            { return `Bilan de la dernière ${timeUnit}`; }
+            return `Bilan du dernier ${timeUnit}`;
+        }
     }
 
     exportPDF(then)
